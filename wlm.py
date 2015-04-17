@@ -27,13 +27,15 @@ def main():
     sys.exit(1)
 
   dllname = args[0]
-  print 'loading dll:', dllname
-  
+
   if not os.path.isfile(dllname):
     print 'cant find the dll, check the path:', dllname
     sys.exit(1)
 
-  dll = ctypes.WinDLL(dllname)
+  dllname = os.path.abspath(dllname)
+  print 'loading dll:', dllname
+
+  dll = ctypes.WinDLL( dllname )
   return dll
 
 if __name__ == "__main__":
