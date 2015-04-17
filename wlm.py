@@ -24,11 +24,11 @@ def main():
   args = sys.argv[1:]
   if not len(args):
     print 'usage: wlm.py path_to_wlmData.dll'
-    args[0]='C:\Users\stepansnigirev\AppData\Roaming\Local Libraries\Local Documents\python\py-ws7\wlmData-original.dll'
-#    sys.exit(1)
-  dllname = args[0]
+    sys.exit(1)
 
+  dllname = args[0]
   print 'loading dll:', dllname
+  
   if not os.path.isfile(dllname):
     print 'cant find the dll, check the path:', dllname
     sys.exit(1)
