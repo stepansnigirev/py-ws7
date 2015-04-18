@@ -5,8 +5,17 @@ Module to work with Angstrom WS7 wavelength meter
 import ctypes
 import os
 import sys
+import random
 
 class wlm:
+
+  def GetAll(self):
+    d={}
+    d['debug']=self.debug
+    d['wavelength']=self.GetWavelength()
+    d['frequency']=self.GetFrequency()
+    d['exposureMode']=self.GetExposureMode()
+    return d
 
   def GetExposureMode(self):
     if not self.debug:
@@ -22,9 +31,9 @@ class wlm:
 
   def GetWavelength(self):
     if not self.debug:
-      return self.dll.GetWavelength(ctypes.c_double(0))
+      return self.dll.GetWavelength(ctypes.c_double(0))/10000.0
     else:
-      return 78003300
+      return round(780.03300+int(random.uniform(0,100))/10000.0,4)
 
   def GetFrequency(self):
     if not self.debug:
