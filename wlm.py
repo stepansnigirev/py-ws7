@@ -9,25 +9,25 @@ import sys
 class wlm:
 
   def GetExposureMode(self):
-    if not debug:
+    if not self.debug:
       return (self.dll.GetExposureMode(ctypes.c_bool(0))==1)
     else:
       return True
 
   def SetExposureMode(self, b):
-    if not debug:
+    if not self.debug:
       return self.dll.SetExposureMode(ctypes.c_bool(b))
     else:
       return 0
 
   def GetWavelength(self):
-    if not debug:
+    if not self.debug:
       return self.dll.GetWavelength(ctypes.c_double(0))
     else:
       return 78003300
 
   def GetFrequency(self):
-    if not debug:
+    if not self.debug:
       return self.dll.GetFrequency(ctypes.c_double(0))
     else:
       return 38434900
