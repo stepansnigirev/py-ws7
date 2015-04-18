@@ -6,38 +6,32 @@ import ctypes
 import os
 import sys
 
-def GetExposureMode(dll):
-  """
-  Auto/Manual exposure mode
-  Argument: link to the library obtained by wlm.init(path) function
-  Returns:  True/False - True if mode is Auto, False otherwise
-  """
-  return dll.GetExposureMode(ctypes.c_bool(0))
+class wlm:
 
-def main():
-  """
-  This function should be called first to establish connection with wmlData.dll library
-  Returns:  link to the library
-  """
-  #dllname = 'C:\Windows\System32\wmlData.dll'
-  #args = sys.argv[1:]
-  #if not len(args):
-  #  print 'usage: wlm.py path_to_wlmData.dll'
-  #  sys.exit(1)
+  def GetExposureMode(self):
+    return (self.dll.GetExposureMode(ctypes.c_bool(0))==1)
 
-  #dllname = args[0]
+  def SetExposureMode(self, b):
+    return self.dll.SetExposureMode(ctypes.c_bool(b))
 
-  #if not os.path.isfile(dllname):
-  #  print 'cant find the dll, check the path:', dllname
-  #  sys.exit(1)
+  def GetWavelength(self):
+    return self.dll.GetWavelength(ctypes.c_double(0))
 
-  #dllname = os.path.abspath(dllname)
-  dllname = "C:\wlmData.dll"
-  print 'loading dll:', dllname
+  def GetFrequency(self):
+    return self.dll.GetFrequency(ctypes.c_double(0))
 
-  dll = ctypes.WinDLL( dllname )
-  print GetExposureMode(dll)
-#  return dll
+  def GetWavelength(self):
+    return 780.033
 
-if __name__ == "__main__":
-  main()
+  def __init__(self, dllpath="C:\Windows\System32\wmlData.dll"):
+    """
+    Wavelength meter class. 
+    Argument: Optional path to the dll. Default: "C:\Windows\System32\wmlData.dll"
+    """
+    self.dllpath = dllpath
+    if not os.path.isfile(dllpath):
+      print 'cant find the file ', dllpath
+      #throw error here
+    #return -1
+
+    #self.dll = ctypes.WinDLL(dllpath)
