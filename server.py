@@ -53,7 +53,7 @@ if __name__ == "__main__":
   if "-debug" in args:
     debug = True
 
-  meter = wlm("./wlmData-test.dll", debug)
+  meter = wlm("./additional/wlmData-test.dll", debug)
   #print 'Current wavelength is', meter.GetWavelength()
 
   application.listen(8888)
