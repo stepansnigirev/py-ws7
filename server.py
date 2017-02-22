@@ -23,7 +23,7 @@ class Sockets(tornado.websocket.WebSocketHandler):
       mode = 'working'
     self.write_message(json.dumps(meter.GetAll()))
     self.callback = PeriodicCallback(self.send_hello, 1000)
-    self.callback.start()    
+    self.callback.start()
 
   def send_hello(self):
     self.write_message(json.dumps(meter.GetAll()))
@@ -53,7 +53,7 @@ if __name__ == "__main__":
   if "-debug" in args:
     debug = True
 
-  meter = wlm("./additional/wlmData-test.dll", debug)
+  meter = Wavelengthmeter("./additional/wlmData-test.dll", debug)
   #print 'Current wavelength is', meter.GetWavelength()
 
   application.listen(8888)

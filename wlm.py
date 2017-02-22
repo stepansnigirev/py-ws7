@@ -7,7 +7,7 @@ import os
 import sys
 import random
 
-class wlm:
+class Wavelengthmeter:
 
   def GetAll(self):
     d={}
@@ -29,29 +29,37 @@ class wlm:
     else:
       return 0
 
-  def GetWavelength(self):
+  def GetWavelength(self, channel=1):
     if not self.debug:
-      return self.dll.GetWavelength(ctypes.c_double(0))/10000.0
+      return self.dll.GetWavelengthNum(ctypes.c_long(channel), ctypes.c_double(0))
     else:
       return round(780.03300+int(random.uniform(0,100))/10000.0,4)
 
-  def GetFrequency(self):
+  def GetFrequency(self, channel=1):
     if not self.debug:
-      return self.dll.GetFrequency(ctypes.c_double(0))
+      return self.dll.GetFrequencyNum(ctypes.c_long(channel), ctypes.c_double(0))
     else:
       return 38434900
 
-  def __init__(self, dllpath="C:\Windows\System32\wmlData.dll", debug=False):
+  def __init__(self, dllpath="C:\Windows\System32\wlmData.dll", debug=False):
     """
     Wavelength meter class. 
-    Argument: Optional path to the dll. Default: "C:\Windows\System32\wmlData.dll"
+    Argument: Optional path to the dll. Default: "C:\Windows\System32\wlmData.dll"
     """
     self.dllpath = dllpath
+    self.debug = debug
     if not os.path.isfile(dllpath):
-      print 'cant find the file ', dllpath
+      print('cant find the file ', dllpath)
+      self.debug = True
       #throw error here
     #return -1
+    else:
+      if not debug:
+        self.dll = ctypes.WinDLL(dllpath)
+        self.dll.GetWavelengthNum.restype = ctypes.c_double
+        self.dll.GetFrequencyNum.restype = ctypes.c_double
 
-    self.debug = debug
-    if not debug:
-      self.dll = ctypes.WinDLL(dllpath)
+if __name__ == '__main__':
+  wlm = Wavelengthmeter()
+  for i in range(1,9):
+	  print(wlm.GetWavelength(i))
