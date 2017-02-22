@@ -62,4 +62,4 @@ class Wavelengthmeter:
 if __name__ == '__main__':
   wlm = Wavelengthmeter()
   for i in range(1,9):
-	  print(wlm.GetWavelength(i))
+    print("Wavelength at channel %d:\t%.2f" % (i,wlm.GetWavelength(i)))
