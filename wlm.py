@@ -52,22 +52,22 @@ class WavelengthMeter:
             "exposureMode": self.GetExposureMode()
         }
 
-    @property
+    @property 
     def wavelengths(self):
         return [self.GetWavelength(i) for i in range(1,9)]
 
-    @property
+    @property 
     def wavelength(self):
         return self.GetWavelength(1)
 
-    @property
+    @property 
     def switcher_mode(self):
         if not self.debug:
         	return self.dll.GetSwitcherMode(ctypes.c_long(0))
         else:
             return 0
 
-    @switcher_mode.setter
+    @switcher_mode.setter 
     def switcher_mode(self, mode):
         if not self.debug:
         	self.dll.SetSwitcherMode(ctypes.c_long(int(mode)))
