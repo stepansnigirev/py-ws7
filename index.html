@@ -12,6 +12,7 @@
                 height: 100%;
                 font-size: 30px;
                 background: #ddd;
+                overflow: hidden;
             }
             #wl{
                 font-size: 100px;
@@ -26,7 +27,7 @@
                 text-align: center;
             }
             .container{
-                padding-top: 200px;                
+                padding-top: 200px;
             }
             .label{
                 color: #777;
@@ -47,7 +48,7 @@
             $('#wl').html(wl);
         };
 
-        ws = new WebSocket("ws://localhost:8888/websocket");
+        ws = new WebSocket("ws://"+location.host+"/ws/");
         ws.onmessage = function(e) {
             // console.log('message received: ' + e.data);
             parseData(e.data);
@@ -56,6 +57,6 @@
         <div class="container">
             <div class="center label">Current wavelength:</div>
             <div id="wl" class="data">Loading...</div>
-        </div> 
+        </div>
     </body>
 </html>

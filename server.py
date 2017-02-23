@@ -7,55 +7,49 @@ import tornado.websocket
 from tornado.ioloop import PeriodicCallback
 import json
 
-from wlm import wlm
+from wlm import WavelengthMeter
 
-def logmsg(msg):
-  d={}
-  d['type']='log'
-  d['message']=msg
-  return json.dumps(d)
+clients = []
 
-class Sockets(tornado.websocket.WebSocketHandler):
-  def open(self):
-    if debug:
-      mode = 'debug'
-    else:
-      mode = 'working'
-    self.write_message(json.dumps(meter.GetAll()))
-    self.callback = PeriodicCallback(self.send_hello, 1000)
-    self.callback.start()
+def send_data():
+    if len(clients)>0:
+        data = wlm.GetAll()
+        for c in clients:
+            c.write_message(json.dumps(data))
 
-  def send_hello(self):
-    self.write_message(json.dumps(meter.GetAll()))
+class WsHandler(tornado.websocket.WebSocketHandler):
+    def open(self):
+        clients.append(self)
 
-  def on_message(self, message):
-    #self.write_message("you wrote: "+message)
-    pass
+    def on_message(self, message):
+        #self.write_message("you wrote: "+message)
+        pass
 
-  def on_close(self):
-    print 'connection closed'
+    def on_close(self):
+        clients.remove(self)
+        print('connection closed')
 
-class Server(tornado.web.RequestHandler):
-  @tornado.web.asynchronous
-  def get(request):
-    request.render("index.html")
+class IndexHandler(tornado.web.RequestHandler):
+    def get(request):
+        request.render("index.html")
 
 static_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "static"))
 
 application = tornado.web.Application([
-    (r"/", Server),
-    (r"/websocket", Sockets),
-], debug=False, static_path=static_path)
+        (r"/", IndexHandler),
+        (r"/ws/", WsHandler),
+], debug=True, static_path=static_path)
 
 if __name__ == "__main__":
-  debug = False
-  args = sys.argv[1:]
-  if "-debug" in args:
-    debug = True
+    debug_mode = ('--debug' in sys.argv)
 
-  meter = Wavelengthmeter("./additional/wlmData-test.dll", debug)
-  #print 'Current wavelength is', meter.GetWavelength()
+    wlm = WavelengthMeter("./additional/wlmData-test.dll", debug_mode)
 
-  application.listen(8888)
-  tornado.ioloop.IOLoop.instance().start()
+    port = 8000
+    application.listen(port)
+    print("Server started at http://localhost:%d" % port)
+
+    PeriodicCallback(send_data, 100).start()
+
+    tornado.ioloop.IOLoop.instance().start()
 
