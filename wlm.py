@@ -2,7 +2,7 @@
 Module to work with Angstrom WS7 wavelength meter
 """
 
-import ctypes, os, sys, random
+import ctypes, os, sys, random, time
 
 class WavelengthMeter:
 
@@ -18,6 +18,7 @@ class WavelengthMeter:
             self.dll = ctypes.WinDLL(dllpath)
             self.dll.GetWavelengthNum.restype = ctypes.c_double
             self.dll.GetFrequencyNum.restype = ctypes.c_double
+            self.dll.GetSwitcherMode.restype = ctypes.c_long
 
     def GetExposureMode(self):
         if not self.debug:
@@ -59,13 +60,36 @@ class WavelengthMeter:
     def wavelength(self):
         return self.GetWavelength(1)
 
+    @property
+    def switcher_mode(self):
+        if not self.debug:
+        	return self.dll.GetSwitcherMode(ctypes.c_long(0))
+        else:
+            return 0
+
+    @switcher_mode.setter
+    def switcher_mode(self, mode):
+        if not self.debug:
+        	self.dll.SetSwitcherMode(ctypes.c_long(int(mode)))
+        else:
+            pass
+
 if __name__ == '__main__':
+
     debug_mode = ('--debug' in sys.argv)
+
     wlm = WavelengthMeter(debug=debug_mode)
+
     for i, l in enumerate(wlm.wavelengths):
         print("Wavelength at channel %d:\t%.4f nm" % (i+1, l))
 
-    # print(wlm.channels[0].wavelength)
-    # for c in wlm.channels:
-    #     print("Channel %d: %.4f nm" % (c.num, c.wavelength))
+    old_mode = wlm.switcher_mode
+
+    wlm.switcher_mode = True
+
+    print(wlm.wavelengths)
+    time.sleep(0.1)
+    print(wlm.wavelengths)
+
+    wlm.switcher_mode = old_mode
 

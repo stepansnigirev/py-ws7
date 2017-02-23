@@ -29,6 +29,9 @@ class WsHandler(tornado.websocket.WebSocketHandler):
         clients.remove(self)
         print('connection closed')
 
+    def check_origin(self, origin):
+        return True
+
 class IndexHandler(tornado.web.RequestHandler):
     def get(request):
         request.render("index.html")

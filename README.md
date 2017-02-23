@@ -31,7 +31,7 @@ You can also run a webserver to make your wavemeter available over the network. 
 Simply run a webserver script:
 
 ```
-python3 webserver.py 8000
+python3 server.py
 ```
 
 Now you can open [http://localhost:8000/](http://localhost:8000/) in your browser to see the web interface.
@@ -57,16 +57,21 @@ pip install tornado
 
 # Core module `wlm.py`
 
+## `WavelengthMeter` class constructor
+
+WavelengthMeter class accepts two optional arguments:
+- `dllpath` - path to the `wlmData.dll`. Default is `C:\Windows\System32\wlmData.dll`
+- `debug` - partialy emulates work of the dll library without accessing it, default is `False`
+
+## Class methods
+
+- `wavelengths` - array of all wavelengths (from channel 1 to 8)
+- `wavelength` - wavelength of the first channel
+- `switcher_mode` - set to True if you want to measure all channels, set to False to measure only active channel
+
 # Web interface
 
 ## Configuration
 
 ## HTTP API
 
-# TODO
-
-- `python3 wlm.py --debug`
-- `python3 wlm -p [--path] "C:\blahblahblah"`
-- wavelength and wavelengths @properties
-- Normal server and a page
-- Mobile and desktop
