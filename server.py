@@ -13,7 +13,7 @@ clients = []
 
 def send_data():
     if len(clients)>0:
-        data = wlm.wavelengths
+        data = wlmeter.wavelengths
         for c in clients:
             c.write_message(json.dumps(data))
 
@@ -43,7 +43,7 @@ application = tornado.web.Application([
 if __name__ == "__main__":
     debug_mode = ('--debug' in sys.argv)
 
-    wlm = WavelengthMeter("./additional/wlmData-test.dll", debug_mode)
+    wlmeter = WavelengthMeter(debug=debug_mode)
 
     port = 8000
     application.listen(port)
