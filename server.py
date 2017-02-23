@@ -13,7 +13,7 @@ clients = []
 
 def send_data():
     if len(clients)>0:
-        data = wlm.GetAll()
+        data = wlm.wavelengths
         for c in clients:
             c.write_message(json.dumps(data))
 
