@@ -1,5 +1,5 @@
-import os
-import sys
+import argparse
+import os, sys
 
 import tornado.ioloop
 import tornado.web
@@ -44,13 +44,22 @@ application = tornado.web.Application([
 ], debug=True, static_path=static_path)
 
 if __name__ == "__main__":
-    debug_mode = ('--debug' in sys.argv)
 
-    wlmeter = WavelengthMeter(debug=debug_mode)
+    # command line arguments parsing
+    parser = argparse.ArgumentParser(description='Starts a webserver with wavemeter interface.')
+    parser.add_argument('--debug', dest='debug', action='store_const',
+                        const=True, default=False,
+                        help='runs the script in debug mode simulating wavelength values')
+    parser.add_argument('port', metavar='port', type=int, nargs='?',
+                        help='server port, default: 8000',
+                        default=8000)
 
-    port = 8000
-    application.listen(port)
-    print("Server started at http://localhost:%d" % port)
+    args = parser.parse_args()
+
+    wlmeter = WavelengthMeter(debug=args.debug)
+
+    application.listen(args.port)
+    print("Server started at http://localhost:%d" % args.port)
 
     PeriodicCallback(send_data, 100).start()
 

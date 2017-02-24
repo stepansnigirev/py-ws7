@@ -2,6 +2,7 @@
 Module to work with Angstrom WS7 wavelength meter
 """
 
+import argparse
 import ctypes, os, sys, random, time
 
 class WavelengthMeter:
@@ -76,20 +77,29 @@ class WavelengthMeter:
 
 if __name__ == '__main__':
 
-    debug_mode = ('--debug' in sys.argv)
+    # command line arguments parsing
+    parser = argparse.ArgumentParser(description='Reads out wavelength values from the High Finesse Angstrom WS7 wavemeter.')
+    parser.add_argument('--debug', dest='debug', action='store_const',
+                        const=True, default=False,
+                        help='runs the script in debug mode simulating wavelength values')
+    parser.add_argument('channels', metavar='ch', type=int, nargs='*',
+                        help='channel to get the wavelength, by default all channels from 1 to 8',
+                        default=range(1,8))
 
-    wlm = WavelengthMeter(debug=debug_mode)
+    args = parser.parse_args()
 
-    for i, l in enumerate(wlm.wavelengths):
-        print("Wavelength at channel %d:\t%.4f nm" % (i+1, l))
+    wlm = WavelengthMeter(debug=args.debug)
 
-    old_mode = wlm.switcher_mode
+    for i in args.channels:
+        print("Wavelength at channel %d:\t%.4f nm" % (i, wlm.GetWavelength(i)))
 
-    wlm.switcher_mode = True
+    # old_mode = wlm.switcher_mode
 
-    print(wlm.wavelengths)
-    time.sleep(0.1)
-    print(wlm.wavelengths)
+    # wlm.switcher_mode = True
 
-    wlm.switcher_mode = old_mode
+    # print(wlm.wavelengths)
+    # time.sleep(0.1)
+    # print(wlm.wavelengths)
+
+    # wlm.switcher_mode = old_mode
 
