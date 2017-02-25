@@ -72,7 +72,7 @@ def get_config():
     # default configuration
     config = {
         "port": 8000,
-        "precision": 4,
+        "precision": 5,
         "debug": False
     }
 
@@ -90,7 +90,6 @@ def get_config():
 if __name__ == "__main__":
 
     config = get_config()
-    print(config)
 
     wlmeter = WavelengthMeter(debug=config["debug"])
 

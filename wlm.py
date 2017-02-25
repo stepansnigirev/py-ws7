@@ -37,7 +37,10 @@ class WavelengthMeter:
         if not self.debug:
             return self.dll.GetWavelengthNum(ctypes.c_long(channel), ctypes.c_double(0))
         else:
-            return 142 * channel + 180.033 + channel * random.uniform(0,0.0001)
+            wavelengths = [460.8618, 689.2643, 460.8618*2, 707.2016, 679.2888, 0, 0, 0]
+            if channel>5:
+                return 0
+            return wavelengths[channel-1] + channel * random.uniform(0,0.0001)
 
     def GetFrequency(self, channel=1):
         if not self.debug:
