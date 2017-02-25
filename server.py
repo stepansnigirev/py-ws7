@@ -34,32 +34,68 @@ class WsHandler(tornado.websocket.WebSocketHandler):
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(request):
-        request.render("index.html")
+        request.render("index.html", **config)
 
 static_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "static"))
+default_config_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "config.json"))
 
 application = tornado.web.Application([
         (r"/", IndexHandler),
         (r"/ws/", WsHandler),
 ], debug=True, static_path=static_path)
 
-if __name__ == "__main__":
+# config file parser
+class config_action(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        config_file = values
+        if not os.path.isfile(config_file):
+            raise argparse.ArgumentTypeError("config:{0} is not a valid file".format(config_file))
+        if os.access(config_file, os.R_OK):
+            setattr(namespace, self.dest, config_file)
+        else:
+            raise argparse.ArgumentTypeError("config:{0} is not a readable file".format(config_file))
 
+# building configuration
+def get_config():
     # command line arguments parsing
     parser = argparse.ArgumentParser(description='Starts a webserver with wavemeter interface.')
     parser.add_argument('--debug', dest='debug', action='store_const',
-                        const=True, default=False,
+                        const=True,
                         help='runs the script in debug mode simulating wavelength values')
-    parser.add_argument('port', metavar='port', type=int, nargs='?',
-                        help='server port, default: 8000',
-                        default=8000)
+    parser.add_argument('-c', '--config', action=config_action, default=default_config_file,
+                        help='path to config json file, default: config.json in the script folder')
+    parser.add_argument('port', type=int, nargs='?',
+                        help='server port, default: 8000')
 
     args = parser.parse_args()
 
-    wlmeter = WavelengthMeter(debug=args.debug)
+    # default configuration
+    config = {
+        "port": 8000,
+        "precision": 4,
+        "debug": False
+    }
 
-    application.listen(args.port)
-    print("Server started at http://localhost:%d" % args.port)
+    # configuration from the file
+    with open(args.config, "r") as f:
+        config.update(json.loads(f.read()))
+
+    # configuration from command line
+    if args.port == None:
+        args.port = config["port"]
+    config.update(vars(args))
+
+    return config
+
+if __name__ == "__main__":
+
+    config = get_config()
+    print(config)
+
+    wlmeter = WavelengthMeter(debug=config["debug"])
+
+    application.listen(config["port"])
+    print("Server started at http://localhost:%d" % config["port"])
 
     PeriodicCallback(send_data, 100).start()
 

@@ -46,8 +46,8 @@
         function parseData(data){
             var d = JSON.parse(data);
             for (var ch = 0; ch < d.length; ch++) {
-                var wl = (d[ch].toString()).substr(0,9);
-                $('#wl'+ch).html(wl);
+                var wl = d[ch].toFixed({{precision}});
+                document.getElementById('wl'+ch).innerHTML = wl;
             }
         };
 

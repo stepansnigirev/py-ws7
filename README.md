@@ -1,14 +1,10 @@
-# py-ws7
+# Minimal High Finesse Angstrom WS7 wavemeter python module and webserver
 
-A set of python scripts to make work with High Finesse Angstrom WS 7 wavelength meter more convinient. Multichannel extension is also supported.
+A set of python scripts to make work with High Finesse Angstrom WS 7 wavelength meter more convinient. Multichannel switching also works.
 
-Unfortunately it works only on windows and requires a running original application. To make it available in your network via http requests run `webserver.py`.
+Unfortunately it works only on windows and requires a running original application. To make it available in your network via web browser run `server.py`.
 
-Tested to work in python3.5.
-
-# This project is in development!
-
-Documentation is not complete yet. Better look at the code itself.
+Tested to work in Python 3.5 and Python 2.7.
 
 # Quick start
 
