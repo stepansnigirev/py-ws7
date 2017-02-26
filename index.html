@@ -56,13 +56,17 @@
             cursor: pointer;
         }
         .data{
-            font-size: 40px;
             text-align: center;
             margin: auto;
-            color: #333;
-            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            color: #999;
+            font-size: 30px;
+            line-height: 50px;
         }
-         .data:after{
+		.colored .data{
+            font-size: 40px;
+            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+		}
+        .colored .data:after{
             content: ' nm';
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             /* font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace; */
@@ -75,21 +79,6 @@
             color: #999;
         }
 
-        /* COLORED BACKGROUNDS */
-        .blue{
-            background: #2f588a; /* Old browsers */
-            background: -moz-linear-gradient(-45deg, #2f588a 0%, #4a90e2 100%); /* FF3.6-15 */
-            background: -webkit-linear-gradient(-45deg, #2f588a 0%,#4a90e2 100%); /* Chrome10-25,Safari5.1-6 */
-            background: linear-gradient(135deg, #2f588a 0%,#4a90e2 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2f588a', endColorstr='#4a90e2',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-        }
-        .red{
-            background: #9f041b; /* Old browsers */
-            background: -moz-linear-gradient(-45deg, #9f041b 0%, #cf2a39 100%); /* FF3.6-15 */
-            background: -webkit-linear-gradient(-45deg, #9f041b 0%,#cf2a39 100%); /* Chrome10-25,Safari5.1-6 */
-            background: linear-gradient(135deg, #9f041b 0%,#cf2a39 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#9f041b', endColorstr='#cf2a39',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-        }
         .colored .data, .colored .label, .colored .data:after{
             color: #fff;
             text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
@@ -105,35 +94,35 @@
     <div class="container">
         <div>
             <div class="center label">Blue master laser:</div>
-            <div id="wl0" class="data">Loading...</div>
+            <div id="wl0" class="data"></div>
         </div>
         <div>
             <div class="center label">Red master laser:</div>
-            <div id="wl1" class="data">Loading...</div>
+            <div id="wl1" class="data"></div>
         </div>
         <div>
             <div class="center label">TiSa:</div>
-            <div id="wl2" class="data">Loading...</div>
+            <div id="wl2" class="data"></div>
         </div>
         <div>
             <div class="center label">Repumper 707:</div>
-            <div id="wl3" class="data">Loading...</div>
+            <div id="wl3" class="data"></div>
         </div>
         <div>
-            <div class="center label">Repumper 689:</div>
-            <div id="wl4" class="data">Loading...</div>
+            <div class="center label">Repumper 679:</div>
+            <div id="wl4" class="data"></div>
         </div>
         <div>
             <div class="center label">Channel 6:</div>
-            <div id="wl5" class="data">Loading...</div>
+            <div id="wl5" class="data"></div>
         </div>
         <div>
             <div class="center label">Channel 7:</div>
-            <div id="wl6" class="data">Loading...</div>
+            <div id="wl6" class="data"></div>
         </div>
         <div>
             <div class="center label">Channel 8:</div>
-            <div id="wl7" class="data">Loading...</div>
+            <div id="wl7" class="data"></div>
         </div>
     </div>
 
@@ -207,17 +196,24 @@
             background: "linear-gradient(135deg, "+c2+" 0%,"+c1+" 100%)"
         });
     }
+    function resetbg(element){
+    	element.css({
+    		"background": "transparent"
+    	});
+    }
 
     function parseData(data){
         var d = JSON.parse(data);
         for (var ch = 0; ch < d.length; ch++) {
-            var wl = d[ch].toFixed({{precision}});
-            $('#wl'+ch).html(wl);
             var element = $('#wl'+ch).parent();
             if(d[ch]>100){
+	            var wl = d[ch].toFixed({{precision}});
+	            $('#wl'+ch).html(wl);
                 makebg(element, d[ch]);
                 element.addClass("colored");
             }else{
+	            $('#wl'+ch).html("No data");
+                resetbg(element);
                 element.removeClass("colored");
             }
         }
