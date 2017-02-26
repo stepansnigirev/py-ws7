@@ -28,6 +28,8 @@
             background: #fff;
             margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column;
         }
         nav{
             background: #fff;
@@ -37,6 +39,8 @@
             flex-direction: row;
             align-items: center;
             justify-content: space-between;
+            flex-grow: 0;
+            flex-shrink: 0;
         }
         nav a{
             display: block;
@@ -48,16 +52,25 @@
         nav a:hover{
             opacity: 1;
         }
+        .container{
+        	flex-grow: 1;
+        	display: flex;
+        	flex-direction: column;
+        }
         .container > div{
-            display: block;
             padding-top: 20px;
             min-height: 90px;
             border-bottom: 1px solid rgba(0,0,0,0.1);
             cursor: pointer;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .data{
             text-align: center;
-            margin: auto;
+            /* margin: auto; */
             color: #999;
             font-size: 30px;
             line-height: 50px;
@@ -93,31 +106,31 @@
     </nav>
     <div class="container">
         <div>
-            <div class="center label">Blue master laser:</div>
+            <div class="label">Blue master laser:</div>
             <div id="wl0" class="data"></div>
         </div>
         <div>
-            <div class="center label">Red master laser:</div>
+            <div class="label">Red master laser:</div>
             <div id="wl1" class="data"></div>
         </div>
         <div>
-            <div class="center label">TiSa:</div>
+            <div class="label">TiSa:</div>
             <div id="wl2" class="data"></div>
         </div>
         <div>
-            <div class="center label">Repumper 707:</div>
+            <div class="label">Repumper 707:</div>
             <div id="wl3" class="data"></div>
         </div>
         <div>
-            <div class="center label">Repumper 679:</div>
+            <div class="label">Repumper 679:</div>
             <div id="wl4" class="data"></div>
         </div>
         <div>
-            <div class="center label">Channel 6:</div>
+            <div class="label">Channel 6:</div>
             <div id="wl5" class="data"></div>
         </div>
         <div>
-            <div class="center label">Channel 7:</div>
+            <div class="label">Channel 7:</div>
             <div id="wl6" class="data"></div>
         </div>
         <div>
@@ -202,12 +215,15 @@
     	});
     }
 
+    var selected = null;
+    var precision = {{precision}};
+
     function parseData(data){
         var d = JSON.parse(data);
         for (var ch = 0; ch < d.length; ch++) {
             var element = $('#wl'+ch).parent();
             if(d[ch]>100){
-	            var wl = d[ch].toFixed({{precision}});
+	            var wl = d[ch].toFixed(precision);
 	            $('#wl'+ch).html(wl);
                 makebg(element, d[ch]);
                 element.addClass("colored");
@@ -224,6 +240,36 @@
         // console.log('message received: ' + e.data);
         parseData(e.data);
     };
+
+    function resizeFont(){
+    	var w = $(document).width();
+    	var fontsize = w/(precision+4);
+    	$(selected).find(".data").css({
+    		"font-size": fontsize+"px",
+    		"line-height": "130%",
+    	});
+    }
+
+    $(".container > div").on("click", function(){
+    	if(selected != this){
+	    	selected = this;
+	    	$(".container > div").hide();
+	    	$(this).show();
+	    	resizeFont();
+    	}else{
+    		selected = null;
+	    	$(".container > div").show();
+	    	$(".container > div > .data").css({
+	    		"font-size": "",
+	    		"line-height": "",
+	    	});
+    	}
+    });
+    $(window).resize(function(){
+    	if(selected != null){
+    		resizeFont();
+    	}
+    })
     </script>
 </body>
 </html>
