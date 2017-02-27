@@ -88,6 +88,7 @@ function parseData(data){
             }
         }else{
             $('#wl'+ch).html("No data");
+            oldData[ch] = d[ch];
             if(element.hasClass("colored")){
                 resetbg(element);
                 element.removeClass("colored");
