@@ -1,3 +1,4 @@
+{% autoescape None %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -45,6 +46,7 @@
     <script>
         var precision = {{precision}}; // number of digits config from the server
         var data = {{wavelengths}};
+        var channels = {{channels}};
     </script>
     <script src="static/app.js"></script>
 </body>

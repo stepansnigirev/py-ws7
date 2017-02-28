@@ -34,7 +34,12 @@ class WsHandler(tornado.websocket.WebSocketHandler):
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(request):
-        request.render("index.html", wavelengths=wlmeter.wavelengths, **get_config())
+        request.render("index.html",
+            wavelengths=wlmeter.wavelengths,
+            **get_config()
+        )
+
+
 
 static_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "static"))
 default_config_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "config.json"))

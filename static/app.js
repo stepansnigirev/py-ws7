@@ -93,7 +93,15 @@ function parseData(d){
             // recalc background only if wavelength changed by 1nm or more
             if(Math.abs(d[ch]-oldData[ch])>1){
                 oldData[ch] = d[ch];
-                makebg(element, d[ch]);
+                var c = $.grep(channels, function(e){ return (e.i == ch) && e.background; });
+                if(c.length > 0){
+                    if(!element.hasClass("colored")){
+                        element.css({"background": c[0].background});
+                        element.addClass("colored");
+                    }
+                }else{
+                    makebg(element, d[ch]);
+                }
             }
         }else{
             $('#wl'+ch).html("No data");
