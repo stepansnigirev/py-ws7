@@ -1,3 +1,4 @@
+// function to calculate background gradient from the wavelength value
 function nmToRGB(wavelength){
     var Gamma = 0.80,
     IntensityMax = 255,
@@ -53,6 +54,7 @@ function nmToRGB(wavelength){
     return [red,green,blue];
 }
 
+// applying background gradient
 function makebg(element, wavelength){
     var v = nmToRGB(wavelength);
     var color = d3.rgb(v[0], v[1], v[2]);
@@ -61,18 +63,28 @@ function makebg(element, wavelength){
     element.css({
         background: "linear-gradient(135deg, "+c2+" 0%,"+c1+" 100%)"
     });
-}
-function resetbg(element){
-	element.css({
-		"background": "transparent"
-	});
+    if(!element.hasClass("colored")){
+        element.addClass("colored");
+    }
 }
 
+// resetting background gradient
+function resetbg(element){
+    if(element.hasClass("colored")){
+        element.removeClass("colored");
+        element.css({
+            "background": "transparent"
+        });
+    }
+}
+
+// selected element for fullscreen mode
 var selected = null;
+
+// data to compare with and decide if background should be changed
 var oldData = [0,0,0,0,0,0,0,0];
 
-function parseData(data){
-    var d = JSON.parse(data);
+function parseData(d){
     for (var ch = 0; ch < d.length; ch++) {
         var element = $('#wl'+ch).parent();
         if(d[ch]>100){
@@ -82,27 +94,21 @@ function parseData(data){
             if(Math.abs(d[ch]-oldData[ch])>1){
                 oldData[ch] = d[ch];
                 makebg(element, d[ch]);
-                if(!element.hasClass("colored")){
-                    element.addClass("colored");
-                }
             }
         }else{
             $('#wl'+ch).html("No data");
             oldData[ch] = d[ch];
-            if(element.hasClass("colored")){
-                resetbg(element);
-                element.removeClass("colored");
-            }
+            resetbg(element);
         }
     }
 };
 
 ws = new WebSocket("ws://"+location.host+"/ws/");
 ws.onmessage = function(e) {
-    // console.log('message received: ' + e.data);
-    parseData(e.data);
+    parseData(JSON.parse(e.data));
 };
 
+// make wavelength value fullscreen
 function resizeFont(){
 	var w = $(document).width();
 	var fontsize = w/(precision+4);
@@ -112,6 +118,7 @@ function resizeFont(){
 	});
 }
 
+// selecting channel for fullscreen mode
 $(".container > div").on("click", function(){
 	if(selected != this){
     	selected = this;
@@ -127,8 +134,12 @@ $(".container > div").on("click", function(){
     	});
 	}
 });
+
+// changing font size on resize of the window
 $(window).resize(function(){
 	if(selected != null){
 		resizeFont();
 	}
-})
+});
+
+parseData(data);

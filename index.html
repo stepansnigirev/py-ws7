@@ -28,44 +28,23 @@
         <!-- <a href="#settings"><img src="static/settings.svg"></a> -->
     </nav>
     <div class="container">
-        <div>
-            <div class="label">Blue master laser:</div>
-            <div id="wl0" class="data"></div>
-        </div>
-        <div>
-            <div class="label">Red master laser:</div>
-            <div id="wl1" class="data"></div>
-        </div>
-        <div>
-            <div class="label">Repumper 679:</div>
-            <div id="wl2" class="data"></div>
-        </div>
-        <div>
-            <div class="label">Repumper 707:</div>
-            <div id="wl3" class="data"></div>
-        </div>
-        <div>
-            <div class="label">TiSa:</div>
-            <div id="wl4" class="data"></div>
-        </div>
-        <div>
-            <div class="label">Channel 6:</div>
-            <div id="wl5" class="data"></div>
-        </div>
-        <div>
-            <div class="label">Channel 7:</div>
-            <div id="wl6" class="data"></div>
-        </div>
-        <div>
-            <div class="center label">Channel 8:</div>
-            <div id="wl7" class="data"></div>
-        </div>
+        {% for channel in channels %}
+            <div>
+            {% if "label" in channel %}
+                <div class="label">{{channel["label"]}}:</div>
+            {% else %}
+                <div class="label">Channel {{channel["i"]+1}}:</div>
+            {% end %}
+                <div id='wl{{channel["i"]}}' class="data"></div>
+            </div>
+        {% end %}
     </div>
 
     <script src="static/jquery-3.1.1.min.js"></script>
     <script src="static/d3.v4.min.js"></script>
     <script>
-        var precision = {{precision}};
+        var precision = {{precision}}; // number of digits config from the server
+        var data = {{wavelengths}};
     </script>
     <script src="static/app.js"></script>
 </body>

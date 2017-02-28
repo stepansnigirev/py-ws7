@@ -34,7 +34,7 @@ class WsHandler(tornado.websocket.WebSocketHandler):
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(request):
-        request.render("index.html", **config)
+        request.render("index.html", wavelengths=wlmeter.wavelengths, **get_config())
 
 static_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "static"))
 default_config_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "config.json"))
@@ -73,7 +73,8 @@ def get_config():
     config = {
         "port": 8000,
         "precision": 5,
-        "debug": False
+        "debug": False,
+        "channels": [{"i": i, "label": "Channel %d" % (i+1)} for i in range(8)]
     }
 
     # configuration from the file
