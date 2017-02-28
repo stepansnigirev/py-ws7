@@ -111,6 +111,7 @@ function parseData(d){
     }
 };
 
+// ADD RECONNECT HERE
 ws = new WebSocket("ws://"+location.host+"/ws/");
 ws.onmessage = function(e) {
     parseData(JSON.parse(e.data));

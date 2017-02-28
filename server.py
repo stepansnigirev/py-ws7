@@ -9,6 +9,7 @@ import json
 
 from wlm import WavelengthMeter
 
+# all connected browsers will be here
 clients = []
 
 def send_data():
@@ -21,24 +22,34 @@ class WsHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         clients.append(self)
 
-    def on_message(self, message):
-        #self.write_message("you wrote: "+message)
-        pass
-
     def on_close(self):
         clients.remove(self)
         print('connection closed')
 
+    # to allow cross-domain connections
     def check_origin(self, origin):
         return True
 
+class ApiHandler(tornado.web.RequestHandler):
+    def get(self, channel=None):
+        w = wlmeter.wavelengths
+        sw = wlmeter.switcher_mode
+        if channel is None:
+            self.write({ "wavelengths": w, "switcher_mode": sw })
+        else:
+            ch = int(channel)
+            if ch >=0 and ch<len(w):
+                self.write("%.8f" % w[ch])
+            else:
+                self.set_status(400)
+                self.write({"error":"Wrong channel"})
+
 class IndexHandler(tornado.web.RequestHandler):
-    def get(request):
-        request.render("index.html",
+    def get(self):
+        self.render("index.html",
             wavelengths=wlmeter.wavelengths,
             **get_config()
         )
-
 
 
 static_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "static"))
@@ -46,6 +57,8 @@ default_config_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "c
 
 application = tornado.web.Application([
         (r"/", IndexHandler),
+        (r"/api/", ApiHandler),
+        (r"/api/(\d)/", ApiHandler),
         (r"/ws/", WsHandler),
 ], debug=True, static_path=static_path)
 
@@ -78,6 +91,7 @@ def get_config():
     config = {
         "port": 8000,
         "precision": 5,
+        "update_rate": 0.1, # update rate in s
         "debug": False,
         "channels": [{"i": i, "label": "Channel %d" % (i+1)} for i in range(8)]
     }
@@ -102,7 +116,8 @@ if __name__ == "__main__":
     application.listen(config["port"])
     print("Server started at http://localhost:%d" % config["port"])
 
-    PeriodicCallback(send_data, 100).start()
+    # periodic callback takes update rate in ms
+    PeriodicCallback(send_data, config["update_rate"]*1000).start()
 
     tornado.ioloop.IOLoop.instance().start()
 

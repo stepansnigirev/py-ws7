@@ -1,0 +1,18 @@
+{
+	"precision": 5,
+	"port": 8000,
+	"channels": [
+		{ "i": 0, "label": "Blue master"},
+		{
+			"i": 4,
+			"label": "TiSa",
+			"background": "#300"
+		},
+		{ "i": 1, "label": "Red master"},
+		{ "i": 2, "label": "Repumper 679 nm"},
+		{ "i": 3, "label": "Repumper 707 nm"},
+		{ "i": 5 },
+		{ "i": 6 },
+		{ "i": 7 }
+	]
+}

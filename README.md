@@ -1,57 +1,65 @@
-# Minimal High Finesse Angstrom WS7 wavemeter python module and webserver
+# py-ws7 – minimal wavemeter webserver
 
-A set of python scripts to make work with High Finesse Angstrom WS 7 wavelength meter more convinient. Multichannel switching also works.
+py-ws7 is a very simple python webserver that allows to get the wavelength from the High Finesse Angstrom WS7 wavemeter and send it to any computer or phone in your network. Multichannel switch is also supported.
 
-Unfortunately it works only on windows and requires a running original application. To make it available in your network via web browser run `server.py`.
+![](extra/screenshot.jpg)
 
-Tested to work in Python 3.5 and Python 2.7.
+## Features
 
-# Quick start
+- Mobile and desktop friendly webserver
+- Minimal python module to work with `wlmData.dll` library
+- Simple HTTP API to get data (for example with [requests](http://docs.python-requests.org/en/master/))
+- Flexible configuration
+- Javascript library to embed realtime wavelength value in your pages
 
-## Simple example
+## Quick start
 
-```py
-from wlm import WavelengthMeter
-
-wlm = WavelengthMeter()
-for i, l in enumerate(wlm.wavelengths):
-    print("Wavelength at channel %d:\t%.4f nm" % (i+1, l))
-```
-
-This example will print wavelengths of every channel of the wavemeter.
-
-## Web interface
-
-You can also run a webserver to make your wavemeter available over the network. It includes a web interface and http API.
-
-Simply run a webserver script:
-
-```
-python3 server.py
-```
-
-Now you can open [http://localhost:8000/](http://localhost:8000/) in your browser to see the web interface.
-
-All the information about the webserver's API is available from the menu of the web interface (/help/) or [here](#web-interface-1).
-
-# Installation
-
-To get data from the wavemeter you will need:
-- A wavemeter itself connected to the computer
-- Windows
-- Original High Finesse software running
-
-For testing and debugging without access to the wavemeter and software you can use a [dummy library](wlmData/wlmData-test.dll). But still you need Windows.
-
-A core module `wlm.py` doesn't have any python dependencies.
-
-Webserver script requires tornado. So if you want to run a webserver, install it:
+Server works on both python2.7 and python3.5. The only dependence is [tornado framework](http://www.tornadoweb.org/en/stable/). You can install it via:
 
 ```
 pip install tornado
 ```
 
-# Core module `wlm.py`
+To start the server you will need:
+
+- Windows computer with High Finesse software installed and running
+- Python 2 or Python 3
+
+Just run in the command line:
+
+```
+python server.py
+```
+
+Web interface will be available on [http://localhost:8000](http://localhost:8000)
+
+## Configuration
+
+In the project folder there is an example configuration file `config-example.json` where you can assign desired channels, labels and custom background. By default script will try to load `config.json` file in the same folder.
+
+## Flags
+
+To find out possible command line arguments run:
+
+```
+python server.py -h
+```
+
+Flag `--debug` starts the server in debug mode so you can see what it looks like without wavemeter, also on linux or mac computer.
+
+To run server on 80 port (default http port) run:
+
+```
+python server.py 80
+```
+
+## HTTP API
+
+When server is running you can get wavelengths in json format by simple http requests.
+
+Try adding [/api/](http://localhost:8000/api/) to the url, or [/api/3/](http://localhost:8000/api/3/) to get wavelength of corresponding channel (channels here start from 0).
+
+# Minimal python module `wlm.py`
 
 ## `WavelengthMeter` class constructor
 
@@ -59,15 +67,9 @@ WavelengthMeter class accepts two optional arguments:
 - `dllpath` - path to the `wlmData.dll`. Default is `C:\Windows\System32\wlmData.dll`
 - `debug` - partialy emulates work of the dll library without accessing it, default is `False`
 
-## Class methods
+## Class properties
 
 - `wavelengths` - array of all wavelengths (from channel 1 to 8)
 - `wavelength` - wavelength of the first channel
 - `switcher_mode` - set to True if you want to measure all channels, set to False to measure only active channel
-
-# Web interface
-
-## Configuration
-
-## HTTP API
 
