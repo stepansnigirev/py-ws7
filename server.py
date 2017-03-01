@@ -52,15 +52,17 @@ class IndexHandler(tornado.web.RequestHandler):
         )
 
 
-static_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "static"))
 default_config_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "config.json"))
 
-application = tornado.web.Application([
-        (r"/", IndexHandler),
-        (r"/api/", ApiHandler),
-        (r"/api/(\d)/", ApiHandler),
-        (r"/ws/", WsHandler),
-], debug=True, static_path=static_path)
+def make_app(config):
+    static_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "static"))
+    return tornado.web.Application([
+            (r"%s" % config["root"], IndexHandler),
+            (r"%sapi/" % config["root"], ApiHandler),
+            (r"%sapi/(\d)/" % config["root"], ApiHandler),
+            (r"%sws/" % config["root"], WsHandler),
+            (r"%sstatic/(.*)" % config["root"], tornado.web.StaticFileHandler, {'path': static_path}),
+    ], debug=True)
 
 # config file parser
 class config_action(argparse.Action):
@@ -89,11 +91,12 @@ def get_config():
 
     # default configuration
     config = {
-        "port": 8000,
-        "precision": 5,
-        "update_rate": 0.1, # update rate in s
-        "debug": False,
-        "channels": [{"i": i, "label": "Channel %d" % (i+1)} for i in range(8)]
+        "port": 8000, # port
+        "root": "/", # path
+        "precision": 5, # number of decimals in wavelength display
+        "update_rate": 0.1, # how often updates will be sent to the browsers
+        "debug": False, # do you want to work with real wavemeter or to test run it?
+        "channels": [{"i": i, "label": "Channel %d" % (i+1)} for i in range(8)] # channels to display
     }
 
     # configuration from the file
@@ -113,8 +116,9 @@ if __name__ == "__main__":
 
     wlmeter = WavelengthMeter(debug=config["debug"])
 
-    application.listen(config["port"])
-    print("Server started at http://localhost:%d" % config["port"])
+    app = make_app(config)
+    app.listen(config["port"])
+    print("Server started at http://localhost:%d%s" % (config["port"], config["root"]))
 
     # periodic callback takes update rate in ms
     PeriodicCallback(send_data, config["update_rate"]*1000).start()

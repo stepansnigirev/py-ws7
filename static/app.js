@@ -112,7 +112,7 @@ function parseData(d){
 };
 
 // ADD RECONNECT HERE
-ws = new WebSocket("ws://"+location.host+"/ws/");
+ws = new WebSocket("ws://"+location.host+location.pathname+"ws/");
 ws.onmessage = function(e) {
     parseData(JSON.parse(e.data));
 };
