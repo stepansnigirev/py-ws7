@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>wlm.js library test</title>
+	<style type="text/css">
+		body{
+		    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+		}
+		#mydiv, #myotherdiv{
+			width: 500px;
+			height: 200px;
+			border: 1px solid #aaa;
+			text-align: center;
+			line-height: 200px;
+			font-size: 50px;
+			overflow: hidden;
+		    font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+		}
+		.container{
+			margin: auto;
+			width: 550px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>wlm.js test page</h1>
+		<p>Wavelength of the 1st channel should appear in this div:</p>
+		<div id="mydiv"></div>
+		<p>Wavelength of the 4th channel should appear in this div:</p>
+		<div id="myotherdiv"></div>
+	</div>
+
+	<script src="http://localhost:8000/static/wlm.js"></script>
+	<script type="text/javascript">
+		wlm = Wavemeter({
+			"url": "http://localhost:8000/", // defines url to connect
+			"precision": 5, // defines representation of the wavelength
+			"channels": [ // array of channels and element's ids
+				{ "channel": 0, "element": "mydiv"},
+				{ "channel": 3, "element": "myotherdiv"},
+			]
+		});
+		wlm.start();
+	</script>
+</body>
+</html>
