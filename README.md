@@ -35,7 +35,7 @@ Web interface will be available on [http://localhost:8000](http://localhost:8000
 
 ## Configuration
 
-In the project folder there is an example configuration file `config-example.json` where you can assign desired channels, labels and custom background. By default script will try to load `config.json` file in the same folder.
+In the project folder there is an example configuration file `config-example.json` where you can see how to set desired channels, labels and custom background. By default server will try to load `config.json` file in the same folder.
 
 ## Flags
 
