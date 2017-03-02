@@ -2,7 +2,7 @@
 
 py-ws7 is a very simple python webserver that allows to get the wavelength from the High Finesse Angstrom WS7 wavemeter and send it to any computer or phone in your network. Multichannel switch is also supported.
 
-![](extra/screenshot.jpg)
+![python webserver for HighFinesse wavemeter](extra/screenshot.jpg)
 
 ## Features
 
@@ -57,6 +57,14 @@ To run server on 80 port (default http port) run:
 
 ```
 python server.py 80
+```
+
+To make the server available not on localhost:8000/ but on localhost:8000/wlm/ add a flag `-r` or `--root` with desirable root path.
+
+This command will run server on localhost:80/wlm/ in debug mode with config file loaded from `~/wlm_config.json/`:
+
+```
+python server.py --debug -c ~/wlm_config.json -r /wlm/ 80
 ```
 
 ## HTTP API

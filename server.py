@@ -57,11 +57,11 @@ default_config_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "c
 def make_app(config):
     static_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "static"))
     return tornado.web.Application([
-            (r"%s" % config["root"], IndexHandler),
-            (r"%sapi/" % config["root"], ApiHandler),
-            (r"%sapi/(\d)/" % config["root"], ApiHandler),
-            (r"%sws/" % config["root"], WsHandler),
-            (r"%sstatic/(.*)" % config["root"], tornado.web.StaticFileHandler, {'path': static_path}),
+            (r"%s/" % config["root"], IndexHandler),
+            (r"%s/api/" % config["root"], ApiHandler),
+            (r"%s/api/(\d)/" % config["root"], ApiHandler),
+            (r"%s/ws/" % config["root"], WsHandler),
+            (r"%s/static/(.*)" % config["root"], tornado.web.StaticFileHandler, {'path': static_path}),
     ], debug=True)
 
 # config file parser
@@ -84,6 +84,8 @@ def get_config():
                         help='runs the script in debug mode simulating wavelength values')
     parser.add_argument('-c', '--config', action=config_action, default=default_config_file,
                         help='path to config json file, default: config.json in the script folder')
+    parser.add_argument('-r', '--root', default="/",
+                        help='path where the interface will be, like localhost:8000/root/. Default is "/"')
     parser.add_argument('port', type=int, nargs='?',
                         help='server port, default: 8000')
 
@@ -106,7 +108,16 @@ def get_config():
     # configuration from command line
     if args.port == None:
         args.port = config["port"]
+
     config.update(vars(args))
+
+    # add leading slash
+    if len(config["root"]) > 0 and config["root"][0] != "/":
+        config["root"] = "/"+config["root"]
+
+    # remove trailing slash
+    if config["root"][-1] == "/":
+        config["root"] = config["root"][:-1]
 
     return config
 
@@ -118,7 +129,7 @@ if __name__ == "__main__":
 
     app = make_app(config)
     app.listen(config["port"])
-    print("Server started at http://localhost:%d%s" % (config["port"], config["root"]))
+    print("Server started at http://localhost:%d%s/" % (config["port"], config["root"]))
 
     # periodic callback takes update rate in ms
     PeriodicCallback(send_data, config["update_rate"]*1000).start()
