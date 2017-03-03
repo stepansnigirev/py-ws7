@@ -96,6 +96,19 @@ To start working with it you need to include the library and initialize it with 
 
 After that wavelength values of channel 0 and 3 will be putted in elements with ids `mydiv` and `myotherdiv`. Wavelengths are also available from javascript as `wlm.wavelengths`.
 
+You can also ask the library to call a custom function every time it gets new data. For example the following code will write "Resonant" in a div with `id="status"` if wavelength of the 4th channel is close to 707.2017 or "Detuned" otherwise.
+
+```javascript
+wlm.onupdate(function(data){
+	var w = data[3];
+	if(Math.abs(w-707.2017)<0.0001){
+		document.getElementById("status").innerHTML = "Resonant";
+	}else{
+		document.getElementById("status").innerHTML = "Detuned";
+	}
+});
+```
+
 Example page can be found at [http://localhost:8000/static/wlmjs_test.html](http://localhost:8000/static/wlmjs_test.html).
 
 # Minimal python module `wlm.py`

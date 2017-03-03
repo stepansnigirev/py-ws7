@@ -6,7 +6,7 @@
 		body{
 		    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 		}
-		#mydiv, #myotherdiv{
+		#mydiv, #myotherdiv, #status{
 			width: 500px;
 			height: 200px;
 			border: 1px solid #aaa;
@@ -29,6 +29,8 @@
 		<div id="mydiv"></div>
 		<p>Wavelength of the 4th channel should appear in this div:</p>
 		<div id="myotherdiv"></div>
+		<p>Here status will be "resonant" if the wavelength of the 4th channel is 707.2017 ± 0.0001,"detuned" otherwise.</p>
+		<div id="status">Unknown</div>
 	</div>
 
 	<script src="http://localhost:8000/static/wlm.js"></script>
@@ -40,6 +42,14 @@
 				{ "channel": 0, "element": "mydiv"},
 				{ "channel": 3, "element": "myotherdiv"},
 			]
+		});
+		wlm.onupdate(function(data){
+			var w = data[3];
+			if(Math.abs(w-707.2017)<0.0001){
+				document.getElementById("status").innerHTML = "Resonant";
+			}else{
+				document.getElementById("status").innerHTML = "Detuned";
+			}
 		});
 		wlm.start();
 	</script>
