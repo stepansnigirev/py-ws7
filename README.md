@@ -109,6 +109,14 @@ wlm.onupdate(function(data){
 });
 ```
 
+If you want to indicate disconnect event, there is a function for that:
+
+```javascript
+wlm.onclose(function(){
+	document.getElementById("status").innerHTML = "No connection";
+});
+```
+
 Example page can be found at [http://localhost:8000/static/wlmjs_test.html](http://localhost:8000/static/wlmjs_test.html).
 
 # Minimal python module `wlm.py`

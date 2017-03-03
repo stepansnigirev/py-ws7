@@ -29,14 +29,14 @@
 		<div id="mydiv"></div>
 		<p>Wavelength of the 4th channel should appear in this div:</p>
 		<div id="myotherdiv"></div>
-		<p>Here status will be "resonant" if the wavelength of the 4th channel is 707.2017 ± 0.0001,"detuned" otherwise.</p>
+		<p>Here status will be "resonant" if the wavelength of the 4th channel is 707.2017 ± 0.0001,"detuned" otherwise. When disconnected the status will change to "No connection"</p>
 		<div id="status">Unknown</div>
 	</div>
 
-	<script src="http://localhost:8000/static/wlm.js"></script>
+	<script src="./wlm.js"></script>
 	<script type="text/javascript">
 		wlm = Wavemeter({
-			"url": "http://localhost:8000/", // defines url to connect
+			"url": "../", // defines url of the wavemeter interface
 			"precision": 5, // defines representation of the wavelength
 			"channels": [ // array of channels and element's ids
 				{ "channel": 0, "element": "mydiv"},
@@ -50,6 +50,9 @@
 			}else{
 				document.getElementById("status").innerHTML = "Detuned";
 			}
+		});
+		wlm.onclose(function(){
+			document.getElementById("status").innerHTML = "No connection";
 		});
 		wlm.start();
 	</script>

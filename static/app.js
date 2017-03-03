@@ -111,11 +111,21 @@ function parseData(d){
     }
 };
 
-// ADD RECONNECT HERE
-ws = new WebSocket("ws://"+location.host+location.pathname+"ws/");
-ws.onmessage = function(e) {
-    parseData(JSON.parse(e.data));
-};
+var ws;
+
+function connect(){
+    console.log("connecting...");
+    ws = new WebSocket("ws://"+location.host+location.pathname+"ws/");
+    ws.onmessage = function(e) {
+        parseData(JSON.parse(e.data));
+    };
+    ws.onclose = function(e){
+        console.log("closed, trying to reconnect");
+        setTimeout(connect, 1000);
+    };
+}
+
+connect();
 
 // make wavelength value fullscreen
 function resizeFont(){

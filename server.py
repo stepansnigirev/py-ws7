@@ -84,7 +84,7 @@ def get_config():
                         help='runs the script in debug mode simulating wavelength values')
     parser.add_argument('-c', '--config', action=config_action, default=default_config_file,
                         help='path to config json file, default: config.json in the script folder')
-    parser.add_argument('-r', '--root', default="/",
+    parser.add_argument('-r', '--root', default=None,
                         help='path where the interface will be, like localhost:8000/root/. Default is "/"')
     parser.add_argument('port', type=int, nargs='?',
                         help='server port, default: 8000')
@@ -106,10 +106,9 @@ def get_config():
         config.update(json.loads(f.read()))
 
     # configuration from command line
-    if args.port == None:
-        args.port = config["port"]
-
-    config.update(vars(args))
+    config["port"] = (args.port or config["port"])
+    config["root"] = (args.root or config["root"])
+    config["debug"] = (args.debug or config["debug"])
 
     # add leading slash
     if len(config["root"]) > 0 and config["root"][0] != "/":

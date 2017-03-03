@@ -2,7 +2,8 @@ function Wavemeter(options){
     var _wlm = {};
     _wlm.options = options;
     _wlm.wavelengths = [0,0,0,0,0,0,0,0];
-    _wlm.callback = null;
+    _wlm.updateCallback = null;
+    _wlm.closeCallback = null;
     _wlm.parseData = function(d){
         _wlm.wavelengths = d;
         for (var i = 0; i < options.channels.length; i++) {
@@ -11,21 +12,34 @@ function Wavemeter(options){
         }
     };
 
-    var addr = _wlm.options.url.replace("http://","").replace("https://","").replace(/\/$/, "");
+    // building an address for websocket
+    var link = document.createElement("a");
+    link.href = _wlm.options.url;
+    var addr = link.host+link.pathname
 
     _wlm.start = function(){
-        _wlm.ws = new WebSocket("ws://"+addr+"/ws/");
-        _wlm.ws.onmessage = function(e) {
+        _wlm.ws = new WebSocket("ws://"+addr+"ws/");
+        _wlm.ws.onmessage = function(e){
             var d = JSON.parse(e.data);
             _wlm.parseData(d);
-            if(_wlm.callback != null){
-                _wlm.callback(d);
+            if(_wlm.updateCallback != null){
+                _wlm.updateCallback(d);
             }
         };
+        _wlm.ws.onclose = function(e){
+            setTimeout(_wlm.start, 1000);
+            if(_wlm.closeCallback != null){
+                _wlm.closeCallback();
+            }
+        }
     }
 
     _wlm.onupdate = function(callback){
-        _wlm.callback = callback;
+        _wlm.updateCallback = callback;
+    }
+
+    _wlm.onclose = function(callback){
+        _wlm.closeCallback = callback;
     }
     return _wlm;
 }
