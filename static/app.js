@@ -120,11 +120,26 @@ ws.onmessage = function(e) {
 // make wavelength value fullscreen
 function resizeFont(){
 	var w = $(document).width();
+    if(selected == null){
+        var maxh = $(".container > div").height();
+    }else{
+        var maxh = $(selected).height();
+    }
 	var fontsize = w/(precision+4);
-	$(selected).find(".data").css({
-		"font-size": fontsize+"px",
-		"line-height": "130%",
-	});
+    if(fontsize > maxh/2){
+        fontsize = maxh/2;
+    }
+    if(selected != null){
+        $(".container > div .data").css({
+            "font-size": fontsize+"px",
+            "line-height": "130%",
+        });
+    }else{
+        $(".data").css({
+            "font-size": fontsize+"px",
+            "line-height": "130%",
+        });
+    }
 }
 
 // selecting channel for fullscreen mode
@@ -133,7 +148,6 @@ $(".container > div").on("click", function(){
     	selected = this;
     	$(".container > div").hide();
     	$(this).show();
-    	resizeFont();
 	}else{
 		selected = null;
     	$(".container > div").show();
@@ -142,13 +156,13 @@ $(".container > div").on("click", function(){
     		"line-height": "",
     	});
 	}
+    resizeFont();
 });
 
 // changing font size on resize of the window
 $(window).resize(function(){
-	if(selected != null){
-		resizeFont();
-	}
+	resizeFont();
 });
 
 parseData(data);
+resizeFont();
