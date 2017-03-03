@@ -114,13 +114,18 @@ function parseData(d){
 var ws;
 
 function connect(){
-    console.log("connecting...");
     ws = new WebSocket("ws://"+location.host+location.pathname+"ws/");
+    var connected = false;
     ws.onmessage = function(e) {
+        if(!connected){
+            $("#modal").fadeOut(200);
+            connected = true;
+        }
         parseData(JSON.parse(e.data));
     };
     ws.onclose = function(e){
-        console.log("closed, trying to reconnect");
+        connected = false;
+        $("#modal").fadeIn(200).css('display', 'flex');
         setTimeout(connect, 1000);
     };
 }
