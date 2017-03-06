@@ -1,59 +1,87 @@
-{% autoescape None %}
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- android -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <link rel="icon" sizes="192x192" href="static/icons/192.png">
-    <!-- ios -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <link rel="apple-touch-icon" href="static/icons/80.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="static/icons/152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="static/icons/180.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="static/icons/167.png">
+	<!-- android -->
+	<link rel="icon" sizes="192x192" href="img/icons/192.png">
 
-    <link href="static/favicon.ico" rel="shortcut icon">
+	<!-- ios -->
+	<link rel="apple-touch-icon" href="img/icons/80.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="img/icons/152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="img/icons/180.png">
+	<link rel="apple-touch-icon" sizes="167x167" href="img/icons/167.png">
 
-    <link rel="stylesheet" href="static/styles.css">
+	<link href="img/favicon.ico" rel="shortcut icon">
 
-    <title>Wavemeter</title>
+	<link rel="stylesheet" href="styles.css">
+
+	<title>Wavemeter web server</title>
 
 </head>
 <body>
-    <nav>
-        <!-- <a href="#menu"><img src="static/menu.svg"></a> -->
-        Wavemeter
-        <!-- <a href="#settings"><img src="static/settings.svg"></a> -->
-    </nav>
-    <div class="container">
-        {% for channel in channels %}
-            <div>
-            {% if "label" in channel %}
-                <div class="label">{{channel["label"]}}:</div>
-            {% else %}
-                <div class="label">Channel {{channel["i"]+1}}:</div>
-            {% end %}
-                <div id='wl{{channel["i"]}}' class="data"></div>
-            </div>
-        {% end %}
-    </div>
-    <div id="modal">
-        <div>
-            <h1>Disconnected</h1>
-            <p>Trying to reconnect...</p>
-        </div>
-    </div>
-
-    <script src="static/jquery-3.1.1.min.js"></script>
-    <script src="static/d3.v4.min.js"></script>
-    <script>
-        var precision = {{precision}}; // number of digits config from the server
-        var data = {{wavelengths}};
-        var channels = {{channels}};
-    </script>
-    <script src="static/app.js"></script>
+<a href="https://github.com/stepansnigirev/py-ws7" id="fork"><img src="img/fork.png"/></a>
+<div class="hero">
+	<h1>Wavemeter web server</h1>
+	<p>Brings <a href="http://www.highfinesse.com/en/wavelengthmeter">HighFinesse</a> wavemeter interface to your browser, phone or web application.</p>
+	<div class="screenholder">
+		<img src="img/screenshots/screenshot2.png"/>
+	</div>
+	<div class="btnholder">
+		<a href="demo/" class="btn">
+			<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+			    <path d="M0 0h24v24H0z" fill="none"/>
+			    <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+			</svg>
+			View demo
+		</a>
+		<a href="https://github.com/stepansnigirev/py-ws7" class="btn">
+			<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 36 36" enable-background="new 0 0 36 36" xml:space="preserve">
+				<path fill-rule="evenodd" clip-rule="evenodd" d="M18,1.4C9,1.4,1.7,8.7,1.7,17.7c0,7.2,4.7,13.3,11.1,15.5
+			c0.8,0.1,1.1-0.4,1.1-0.8c0-0.4,0-1.4,0-2.8c-4.5,1-5.5-2.2-5.5-2.2c-0.7-1.9-1.8-2.4-1.8-2.4c-1.5-1,0.1-1,0.1-1
+			c1.6,0.1,2.5,1.7,2.5,1.7c1.5,2.5,3.8,1.8,4.7,1.4c0.1-1.1,0.6-1.8,1-2.2c-3.6-0.4-7.4-1.8-7.4-8.1c0-1.8,0.6-3.2,1.7-4.4
+			c-0.2-0.4-0.7-2.1,0.2-4.3c0,0,1.4-0.4,4.5,1.7c1.3-0.4,2.7-0.5,4.1-0.5c1.4,0,2.8,0.2,4.1,0.5c3.1-2.1,4.5-1.7,4.5-1.7
+			c0.9,2.2,0.3,3.9,0.2,4.3c1,1.1,1.7,2.6,1.7,4.4c0,6.3-3.8,7.6-7.4,8c0.6,0.5,1.1,1.5,1.1,3c0,2.2,0,3.9,0,4.5
+			c0,0.4,0.3,0.9,1.1,0.8c6.5-2.2,11.1-8.3,11.1-15.5C34.3,8.7,27,1.4,18,1.4z"/>
+			</svg>
+			Fork on Github
+		</a>
+	</div>
+</div>
+<main>
+	<h2>Features</h2>
+	<div id="features">
+		<div>
+			<img src="img/devices.svg">
+			Responsive interface looks nice both on desktop and mobile.
+		</div>
+		<div>
+			<img src="img/fullscreen.svg">
+			Wavelength value fills all available space so you can see it even from other side of the lab.
+		</div>
+		<div>
+			<img src="img/code.svg">
+			Simple HTTP API, python and javascript libraries that you can use in your control system.
+		</div>
+		<div>
+			<img src="img/gear.svg">
+			Single json configuration file allows flexible configuration to meet your needs.
+		</div>
+	</div>
+	<h2>Requirements</h2>
+	<ul>
+		<li>Windows computer with HighFinesse software installed</li>
+		<li><a href="https://www.python.org/downloads/">Python</a> 2.7 or 3.5+</li>
+		<li><a href="http://www.tornadoweb.org/en/stable/">Tornado</a> web framework (run <code>pip install tornado</code> to get it)</li>
+	</ul>
+	<h2>Quick start</h2>
+	<ul>
+		<li>Make sure that HighFinesse wavemeter application is running and measuring the wavelength</li>
+		<li>Browse to the webserver folder and run the server script: <code>python server.py</code></li>
+		<li>Wavemeter interface should be now available on <a href="http://localhost:8000/">http://localhost:8000/</a></li>
+	</ul>
+	<h2>Configuration</h2>
+</main>
 </body>
 </html>
