@@ -15,7 +15,11 @@
 
 	<link href="img/favicon.ico" rel="shortcut icon">
 
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
 	<link rel="stylesheet" href="styles.css">
+
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
 
 	<title>Wavemeter web server</title>
 
@@ -82,6 +86,143 @@
 		<li>Wavemeter interface should be now available on <a href="http://localhost:8000/">http://localhost:8000/</a></li>
 	</ul>
 	<h2>Configuration</h2>
+	<p>
+		You can configure the webserver via configuration file and overwrite a few options with command line arguments when starting the server. Let's first have a look at the configuration file. By default server is trying to load <code>config.json</code> file from the same folder. This behaviour can be changed by command line flags that we cover later.
+	</p>
+	<h3>Configuration file</h3>
+	<p>
+		Configuration file looks like this:
+	</p>
+	<pre><code class="json">{
+  "precision": 5,
+  "port": 8000,
+  "channels": [
+    { "i": 0, "label": "Blue master"},
+    {
+      "i": 4,
+      "label": "TiSa",
+      "background": "#300"
+    },
+    { "i": 1, "label": "Red master"},
+    { "i": 2, "label": "Repumper 679 nm"},
+    { "i": 3, "label": "Repumper 707 nm"}
+  ],
+  "root": "/"
+}</code></pre>
+	<p>
+		<b>Precision</b> defines number of decimal digits displayed in the wavelength value. For <code>"precision": 5</code> you will get something like <b>460.86180</b>.
+	</p>
+	<p>
+		<b>Port</b> defines http port to listen to. By default the web interface will be available on <a href="http://localhost:8000/">http://localhost:8000/</a>, if you want to get it on <a href="http://localhost/">http://localhost/</a> set port to <b>80</b>. Alternatively you can use Apache or Nginx to route certain requests to the wavemeter server.
+	</p>
+	<p>
+		<b>Channels</b> is an array of wavemeter channels that you are interested in. You can leave only channels that you are using to make interface cleaner. Every channel can have a <b>label</b> and if you are not happy with default background calculated from the wavelength — custom <b>background</b>.
+	</p>
+	<p>
+		<b>Root</b> defines url where you want to get the wavemeter. For example if you want to make it available on <a href="http://localhost:8000/wavemeter/">http://localhost:8000/wavemeter/</a> set <code>"root": "/wavemeter/"</code>.
+	</p>
+	<h3>Command line arguments</h3>
+	<p>
+		Add flag <code>--debug</code> to run server in debug mode that doesn't require wavemeter, HighFinesse application and can run on Linux or MacOS
+	</p>
+	<p>
+		Use <code>-c /path/to/config/file</code> to set configuration file instead of default.
+	</p>
+	<p>
+		Use <code>-r /root/path/</code> to overwrite url of the server.
+	</p>
+	<p>
+		Add port number to change it.
+	</p>
+	<p>
+		For example, running <code>python server.py --debug -c ./config-example.json -r /wavemeter/ 80</code> will start server in debug mode on port 80 with configuration loaded from <code>config-example.json</code> and will be available on <a href="http://localhost/wavemeter/">http://localhost/wavemeter/</a>
+	</p>
+	<h2>API and libraries</h2>
+	<p>
+		Server also includes a few ways to use it in your own projects. It's python module that allows to communicate to the wavemeter directly without a server, HTTP API to get information via simple HTTP requests and a javascript library to embed wavemeter functionality to your web page.
+	</p>
+	<h3>Python module</h3>
+	<p>
+		The simplest example that prints wavelengths values from the wavemeter looks like this:
+	</p>
+	<pre><code class="python">from wlm import *
+
+wlm = WavelengthMeter()
+
+for i, v in enumerate(wlm.wavelengths):
+    print("Wavelength at channel %d:\t%.4f nm" % (i, v))
+	</code></pre>
+	<p>
+		WavelengthMeter class accepts two optional arguments:
+	</p>
+	<ul>
+		<li><code>dllpath</code> — path to the <code>wlmData.dll</code>. Default is <code>C:\Windows\System32\wlmData.dll</code></li>
+		<li><code>debug</code> — partialy emulates work of the dll library without accessing it, default is <code>False</code></li>
+	</ul>
+	<p>
+		Class has the following properties:
+	</p>
+	<ul>
+		<li><code>wavelengths</code> — array of all wavelengths (from channel 1 to 8)</li>
+		<li><code>wavelength</code> — wavelength of the first channel</li>
+		<li><code>switcher_mode</code> — set to True if you want to measure all channels, set to False to measure only active channel</li>
+	</ul>
+	<h3>HTTP API</h3>
+	<p>
+		When server is running you can get wavelengths in json format by simple http requests.
+
+		Try adding <a href="http://localhost:8000/api/">/api/</a> to the url, or <a href="http://localhost:8000/api/3/">/api/3/</a> to get wavelength of corresponding channel (channels here start from 0).
+	</p>
+	<h3>Javascript library</h3>
+	<p>
+		You can insert realtime wavelength from the wavemeter in any http page. It is quite usefull when you have a web control interface of the laser and want to see the wavelength during adjustments.
+	</p>
+	<p>
+		To start working with it you need to include the library and initialize it with several options:
+	</p>
+	<pre><code class="html">&lt;script src="http://localhost:8000/static/wlm.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"&gt;
+	wlm = Wavemeter({
+		"url": "http://localhost:8000/", // defines url to connect
+		"precision": 5, // defines representation of the wavelength
+		"channels": [ // array of channels and element's ids
+			{ "channel": 0, "element": "mydiv"},
+			{ "channel": 3, "element": "myotherdiv"},
+		]
+	});
+	wlm.start();
+&lt;/script&gt;
+</code></pre>
+
+	<p>
+		After that wavelength values of channel 0 and 3 will be putted in elements with ids `mydiv` and `myotherdiv`. Wavelengths are also available from javascript as `wlm.wavelengths`.
+	</p>
+	<p>
+		You can also ask the library to call a custom function every time it gets new data. For example the following code will write "Resonant" in a div with `id="status"` if wavelength of the 4th channel is close to 707.2017 or "Detuned" otherwise.
+	</p>
+
+	<pre><code class="javascript">wlm.onupdate(function(data){
+	var w = data[3];
+	if(Math.abs(w-707.2017)&lt;0.0001){
+		document.getElementById("status").innerHTML = "Resonant";
+	}else{
+		document.getElementById("status").innerHTML = "Detuned";
+	}
+});
+	</code></pre>
+
+	<p>
+		If you want to indicate disconnect event, there is a function for that:
+	</p>
+
+	<pre><code class="javascript">wlm.onclose(function(){
+	document.getElementById("status").innerHTML = "No connection";
+});
+	</code></pre>
+
+	<p>
+		Example page can be found at <a href="http://localhost:8000/static/wlmjs_test.html">http://localhost:8000/static/wlmjs_test.html</a>.
+	</p>
 </main>
 </body>
 </html>
