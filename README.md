@@ -43,6 +43,34 @@ Configuration file overwrites default config, command line arguments overwrite e
 
 In the project folder there is an example configuration file `config-example.json` where you can see how to set desired channels, labels and custom background. By default server will try to load `config.json` file in the same folder.
 
+Configuration file looks like this:
+
+```json
+{
+  "precision": 5,
+  "port": 8000,
+  "channels": [
+    { "i": 0, "label": "Blue master"},
+    {
+      "i": 4,
+      "label": "TiSa",
+      "background": "#300"
+    },
+    { "i": 1, "label": "Red master"},
+    { "i": 2, "label": "Repumper 679 nm"},
+    { "i": 3, "label": "Repumper 707 nm"}
+  ],
+  "root": "/"
+}
+```
+**Precision** defines number of decimal digits displayed in the wavelength value. For `"precision": 5` you will get something like **460.86180**.
+
+**Port** defines http port to listen to. By default the web interface will be available on [http://localhost:8000/](http://localhost:8000/), if you want to get it on [http://localhost/](http://localhost/) set port to **80**. Alternatively you can use Apache or Nginx to route certain requests to the wavemeter server.
+
+**Channels** is an array of wavemeter channels that you are interested in. You can leave only channels that you are using to make interface cleaner. Every channel can have a **label** and if you are not happy with default background calculated from the wavelength — custom **background**.
+
+**Root** defines url where you want to get the wavemeter. For example if you want to make it available on [http://localhost:8000/wavemeter/](http://localhost:8000/wavemeter/) set `"root": "/wavemeter/"`.
+
 ### Flags
 
 To find out possible command line arguments run:
@@ -120,6 +148,17 @@ wlm.onclose(function(){
 Example page can be found at [http://localhost:8000/static/wlmjs_test.html](http://localhost:8000/static/wlmjs_test.html).
 
 # Minimal python module `wlm.py`
+
+Simplest example:
+
+```python
+from wlm import *
+
+wlm = WavelengthMeter()
+
+for i, v in enumerate(wlm.wavelengths):
+    print("Wavelength at channel %d:\t%.4f nm" % (i, v))
+```
 
 ## `WavelengthMeter` class constructor
 
