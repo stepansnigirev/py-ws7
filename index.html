@@ -57,20 +57,24 @@
 	<h2>Features</h2>
 	<div id="features">
 		<div>
-			<img src="img/devices.svg">
-			Responsive interface looks nice both on desktop and mobile.
+			<div>
+				<img src="img/devices.svg">
+				Responsive interface looks nice both on desktop and mobile.
+			</div>
+			<div>
+				<img src="img/fullscreen.svg">
+				Wavelength value fills all available space so you can see it even from other side of the lab.
+			</div>
 		</div>
 		<div>
-			<img src="img/fullscreen.svg">
-			Wavelength value fills all available space so you can see it even from other side of the lab.
-		</div>
-		<div>
-			<img src="img/code.svg">
-			Simple HTTP API, python and javascript libraries that you can use in your control system.
-		</div>
-		<div>
-			<img src="img/gear.svg">
-			Single json configuration file allows flexible configuration to meet your needs.
+			<div>
+				<img src="img/code.svg">
+				Simple HTTP API, python and javascript libraries that you can use in your control system.
+			</div>
+			<div>
+				<img src="img/gear.svg">
+				Single json configuration file allows flexible configuration to meet your needs.
+			</div>
 		</div>
 	</div>
 	<h2>Requirements</h2>
@@ -150,7 +154,7 @@
 wlm = WavelengthMeter()
 
 for i, v in enumerate(wlm.wavelengths):
-    print("Wavelength at channel %d:\t%.4f nm" % (i, v))
+  print("Wavelength at channel %d:\t%.4f nm" % (i, v))
 	</code></pre>
 	<p>
 		WavelengthMeter class accepts two optional arguments:
@@ -182,17 +186,16 @@ for i, v in enumerate(wlm.wavelengths):
 	</p>
 	<pre><code class="html">&lt;script src="http://localhost:8000/static/wlm.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript"&gt;
-	wlm = Wavemeter({
-		"url": "http://localhost:8000/", // defines url to connect
-		"precision": 5, // defines representation of the wavelength
-		"channels": [ // array of channels and element's ids
-			{ "channel": 0, "element": "mydiv"},
-			{ "channel": 3, "element": "myotherdiv"},
-		]
-	});
-	wlm.start();
-&lt;/script&gt;
-</code></pre>
+  wlm = Wavemeter({
+    "url": "http://localhost:8000/", // defines url to connect
+    "precision": 5, // defines representation of the wavelength
+    "channels": [ // array of channels and element's ids
+      { "channel": 0, "element": "mydiv"},
+      { "channel": 3, "element": "myotherdiv"},
+    ]
+  });
+  wlm.start();
+&lt;/script&gt;</code></pre>
 
 	<p>
 		After that wavelength values of channel 0 and 3 will be putted in elements with ids `mydiv` and `myotherdiv`. Wavelengths are also available from javascript as `wlm.wavelengths`.
@@ -202,23 +205,21 @@ for i, v in enumerate(wlm.wavelengths):
 	</p>
 
 	<pre><code class="javascript">wlm.onupdate(function(data){
-	var w = data[3];
-	if(Math.abs(w-707.2017)&lt;0.0001){
-		document.getElementById("status").innerHTML = "Resonant";
-	}else{
-		document.getElementById("status").innerHTML = "Detuned";
-	}
-});
-	</code></pre>
+  var w = data[3];
+  if(Math.abs(w-707.2017)&lt;0.0001){
+    document.getElementById("status").innerHTML = "Resonant";
+  }else{
+    document.getElementById("status").innerHTML = "Detuned";
+  }
+});</code></pre>
 
 	<p>
 		If you want to indicate disconnect event, there is a function for that:
 	</p>
 
 	<pre><code class="javascript">wlm.onclose(function(){
-	document.getElementById("status").innerHTML = "No connection";
-});
-	</code></pre>
+  document.getElementById("status").innerHTML = "No connection";
+});</code></pre>
 
 	<p>
 		Example page can be found at <a href="http://localhost:8000/static/wlmjs_test.html">http://localhost:8000/static/wlmjs_test.html</a>.
