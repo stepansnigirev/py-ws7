@@ -114,7 +114,7 @@ function parseData(d){
 var ws;
 
 function connect(){
-    ws = new WebSocket("ws://"+location.host+location.pathname+"ws/");
+    ws = new WebSocket(location.protocol.replace("http","ws")+"//"+location.host+location.pathname+"ws/");
     var connected = false;
     ws.onmessage = function(e) {
         if(!connected){

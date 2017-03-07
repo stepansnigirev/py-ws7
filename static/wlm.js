@@ -15,10 +15,10 @@ function Wavemeter(options){
     // building an address for websocket
     var link = document.createElement("a");
     link.href = _wlm.options.url;
-    var addr = link.host+link.pathname
+    var addr = link.protocol.replace("http","ws")+"//"+link.host+link.pathname
 
     _wlm.start = function(){
-        _wlm.ws = new WebSocket("ws://"+addr+"ws/");
+        _wlm.ws = new WebSocket(addr+"ws/");
         _wlm.ws.onmessage = function(e){
             var d = JSON.parse(e.data);
             _wlm.parseData(d);

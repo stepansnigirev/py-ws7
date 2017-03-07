@@ -3,6 +3,7 @@ import os, sys
 
 import tornado.ioloop
 import tornado.web
+import tornado.httpserver
 import tornado.websocket
 from tornado.ioloop import PeriodicCallback
 import json
@@ -127,7 +128,11 @@ if __name__ == "__main__":
     wlmeter = WavelengthMeter(debug=config["debug"])
 
     app = make_app(config)
-    app.listen(config["port"])
+    if "ssl" in config:
+        server = tornado.httpserver.HTTPServer(app, xheaders=True, ssl_options=config["ssl"])
+    else:
+        server = tornado.httpserver.HTTPServer(app)
+    server.listen(config["port"])
     print("Server started at http://localhost:%d%s/" % (config["port"], config["root"]))
 
     # periodic callback takes update rate in ms
