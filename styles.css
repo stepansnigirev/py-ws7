@@ -28,7 +28,7 @@ html, body{
 	background: linear-gradient(to right,  #980800 0%,#691d19 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#980800', endColorstr='#691d19',GradientType=1 ); /* IE6-9 */
 	color: #fff;
-	padding: 80px 10px 40px 10px;
+	padding: 120px 10px 40px 10px;
 	text-align: center;
 	font-size: 20px;
 }
@@ -169,9 +169,4 @@ main h3{
 	padding: 7px;
 	margin-top: 10px;
 	text-align: center;
-}
-code{
-	display: inline-block;
-	max-width: 100%;
-	overflow-x: scroll;
 }
