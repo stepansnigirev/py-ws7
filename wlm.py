@@ -5,6 +5,19 @@ Module to work with Angstrom WS7 wavelength meter
 import argparse
 import ctypes, os, sys, random, time
 
+class Wavelengths:
+    def __init__(self, wlm):
+        self._wlm = wlm;
+
+    def __len__(self):
+        return 8 # number of channels in the switch
+
+    def __getitem__(self, index):
+        if isinstance(index, slice):
+            return [self[ii] for ii in range(*index.indices(len(self)))]
+        else:
+            return wlm.GetWavelength(index % len(self) + 1)
+
 class WavelengthMeter:
 
     def __init__(self, dllpath="C:\Windows\System32\wlmData.dll", debug=False):
@@ -15,6 +28,7 @@ class WavelengthMeter:
         self.channels = []
         self.dllpath = dllpath
         self.debug = debug
+        self._wavelengths = Wavelengths(self)
         if not debug:
             self.dll = ctypes.WinDLL(dllpath)
             self.dll.GetWavelengthNum.restype = ctypes.c_double
@@ -58,7 +72,7 @@ class WavelengthMeter:
 
     @property
     def wavelengths(self):
-        return [self.GetWavelength(i) for i in range(1,9)]
+        return self._wavelengths
 
     @property
     def wavelength(self):
@@ -94,8 +108,9 @@ if __name__ == '__main__':
     wlm = WavelengthMeter(debug=args.debug)
 
     for i in args.channels:
-        print("Wavelength at channel %d:\t%.4f nm" % (i, wlm.GetWavelength(i)))
+        print("Wavelength at channel %d:\t%.4f nm" % (i, wlm.wavelengths[i]))
 
+    print(wlm.wavelengths[1:6:2])
     # old_mode = wlm.switcher_mode
 
     # wlm.switcher_mode = True
