@@ -91,7 +91,7 @@
 	</ul>
 	<h2>Configuration</h2>
 	<p>
-		You can configure the webserver via configuration file and overwrite a few options with command line arguments when starting the server. Let's first have a look at the configuration file. By default server is trying to load <code>config.json</code> file from the same folder. This behaviour can be changed by command line flags that we cover later.
+		You can configure the webserver via configuration file and overwrite a few options with command line arguments when starting the server. Let's first have a look at the configuration file. By default server is trying to load <code>config.json</code> file from the same folder. This behavior can be changed by command line flags that we cover later.
 	</p>
 	<h3>Configuration file</h3>
 	<p>
@@ -161,7 +161,7 @@ for i, v in enumerate(wlm.wavelengths):
 	</p>
 	<ul>
 		<li><code>dllpath</code> — path to the <code>wlmData.dll</code>. Default is <code>C:\Windows\System32\wlmData.dll</code></li>
-		<li><code>debug</code> — partialy emulates work of the dll library without accessing it, default is <code>False</code></li>
+		<li><code>debug</code> — partially emulates work of the dll library without accessing it, default is <code>False</code></li>
 	</ul>
 	<p>
 		Class has the following properties:
@@ -179,7 +179,7 @@ for i, v in enumerate(wlm.wavelengths):
 	</p>
 	<h3>Javascript library</h3>
 	<p>
-		You can insert realtime wavelength from the wavemeter in any http page. It is quite usefull when you have a web control interface of the laser and want to see the wavelength during adjustments.
+		You can insert real-time wavelength from the wavemeter in any http page. It is quite useful when you have a web control interface of the laser and want to see the wavelength during adjustments.
 	</p>
 	<p>
 		To start working with it you need to include the library and initialize it with several options:
@@ -198,10 +198,10 @@ for i, v in enumerate(wlm.wavelengths):
 &lt;/script&gt;</code></pre>
 
 	<p>
-		After that wavelength values of channel 0 and 3 will be putted in elements with ids `mydiv` and `myotherdiv`. Wavelengths are also available from javascript as `wlm.wavelengths`.
+		After that wavelength values of channel 0 and 3 will be putted in elements with ids <code>mydiv</code> and <code>myotherdiv</code>. Wavelengths are also available from javascript as <code>wlm.wavelengths</code>.
 	</p>
 	<p>
-		You can also ask the library to call a custom function every time it gets new data. For example the following code will write "Resonant" in a div with `id="status"` if wavelength of the 4th channel is close to 707.2017 or "Detuned" otherwise.
+		You can also ask the library to call a custom function every time it gets new data. For example the following code will write "Resonant" in a div with <code>id="status"</code> if wavelength of the 4th channel is close to 707.2017 or "Detuned" otherwise.
 	</p>
 
 	<pre><code class="javascript">wlm.onupdate(function(data){
@@ -222,7 +222,7 @@ for i, v in enumerate(wlm.wavelengths):
 });</code></pre>
 
 	<p>
-		Example page can be found at <a href="http://localhost:8000/static/wlmjs_test.html">http://localhost:8000/static/wlmjs_test.html</a>.
+		Example page can be found at <a href="http://localhost:8000/static/wlmjs_test.html">http://localhost:8000/static/wlmjs_test.html</a> or <a href="demo/static/wlmjs_test.html">here</a> for a demo wavemeter.
 	</p>
 </main>
 </body>
