@@ -5,19 +5,6 @@ Module to work with Angstrom WS7 wavelength meter
 import argparse
 import ctypes, os, sys, random, time
 
-class Wavelengths:
-    def __init__(self, wlm):
-        self._wlm = wlm;
-
-    def __len__(self):
-        return 8 # number of channels in the switch
-
-    def __getitem__(self, index):
-        if isinstance(index, slice):
-            return [self[ii] for ii in range(*index.indices(len(self)))]
-        else:
-            return wlm.GetWavelength(index % len(self) + 1)
-
 class WavelengthMeter:
 
     def __init__(self, dllpath="C:\Windows\System32\wlmData.dll", debug=False):
@@ -28,7 +15,6 @@ class WavelengthMeter:
         self.channels = []
         self.dllpath = dllpath
         self.debug = debug
-        self._wavelengths = Wavelengths(self)
         if not debug:
             self.dll = ctypes.WinDLL(dllpath)
             self.dll.GetWavelengthNum.restype = ctypes.c_double
@@ -72,7 +58,7 @@ class WavelengthMeter:
 
     @property
     def wavelengths(self):
-        return self._wavelengths
+        return [self.GetWavelength(i+1) for i in range(8)]
 
     @property
     def wavelength(self):
