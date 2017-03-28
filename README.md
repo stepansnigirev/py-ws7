@@ -10,7 +10,7 @@ You can have a look at the interface on a [demo page](https://wavemeter.quantumg
 
 - Mobile and desktop friendly webserver
 - Minimal python module to work with `wlmData.dll` library
-- Simple HTTP API to get data (for example with [requests](http://docs.python-requests.org/en/master/))
+- Simple HTTP API to get data (for example, with [requests](http://docs.python-requests.org/en/master/))
 - Flexible configuration
 - Javascript library to embed realtime wavelength value in your pages
 
@@ -22,7 +22,7 @@ Server works on both python2.7 and python3.5. The only dependence is [tornado fr
 pip install tornado
 ```
 
-To start the server you will need:
+To start the server, you will need:
 
 - Windows computer with High Finesse software installed and running
 - Python 2 or Python 3
@@ -37,7 +37,7 @@ Web interface will be available on [http://localhost:8000](http://localhost:8000
 
 ## Configuration
 
-Server uses three sources of the configuration. Default configuration hardcoded in the `server.py`, configuration file (`config.json` by default or setted by `-c` argument) and command line arguments.
+Server uses three sources of the configuration. Default configuration hardcoded in the `server.py`, configuration file (`config.json` by default or set by `-c` argument) and command line arguments.
 
 Configuration file overwrites default config, command line arguments overwrite everything. This means that even if in the config file you have `"debug": True`, running script with `--debug` flag will start it in the debug mode. The same is applied to the port number.
 
@@ -71,7 +71,7 @@ Configuration file looks like this:
 
 **Channels** is an array of wavemeter channels that you are interested in. You can leave only channels that you are using to make interface cleaner. Every channel can have a **label** and if you are not happy with default background calculated from the wavelength — custom **background**.
 
-**Root** defines url where you want to get the wavemeter. For example if you want to make it available on [http://localhost:8000/wavemeter/](http://localhost:8000/wavemeter/) set `"root": "/wavemeter/"`.
+**Root** defines url where you want to get the wavemeter. For example, if you want to make it available on [http://localhost:8000/wavemeter/](http://localhost:8000/wavemeter/) set `"root": "/wavemeter/"`.
 
 ### Flags
 
@@ -105,7 +105,7 @@ Try adding [/api/](http://localhost:8000/api/) to the url, or [/api/3/](http://l
 
 ## Javscript library `wlm.js`
 
-You can insert realtime wavelength from the wavemeter in any http page. It is quite usefull when you have a web control interface of the laser and want to see the wavelength during adjustments.
+You can insert real-time wavelength from the wavemeter in any http page. It is quite useful when you have a web control interface of the laser and want to see the wavelength during adjustments.
 
 To start working with it you need to include the library and initialize it with several options:
 
@@ -126,7 +126,7 @@ To start working with it you need to include the library and initialize it with 
 
 After that wavelength values of channel 0 and 3 will be putted in elements with ids `mydiv` and `myotherdiv`. Wavelengths are also available from javascript as `wlm.wavelengths`.
 
-You can also ask the library to call a custom function every time it gets new data. For example the following code will write "Resonant" in a div with `id="status"` if wavelength of the 4th channel is close to 707.2017 or "Detuned" otherwise.
+You can also ask the library to call a custom function every time it gets new data. For example, the following code will write "Resonant" in a div with `id="status"` if wavelength of the 4th channel is close to 707.2017 or "Detuned" otherwise.
 
 ```javascript
 wlm.onupdate(function(data){
@@ -166,7 +166,7 @@ for i, v in enumerate(wlm.wavelengths):
 
 WavelengthMeter class accepts two optional arguments:
 - `dllpath` - path to the `wlmData.dll`. Default is `C:\Windows\System32\wlmData.dll`
-- `debug` - partialy emulates work of the dll library without accessing it, default is `False`
+- `debug` - partially emulates work of the dll library without accessing it, default is `False`
 
 ## Class properties
 
