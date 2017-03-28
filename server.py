@@ -14,24 +14,30 @@ from wlm import WavelengthMeter
 clients = []
 
 def send_data():
+    """Gets wavelengths from the wavemeter and sends it to the client"""
     if len(clients)>0:
         data = wlmeter.wavelengths
+        str = json.dumps(data)
         for c in clients:
-            c.write_message(json.dumps(data))
+            c.write_message(str)
 
 class WsHandler(tornado.websocket.WebSocketHandler):
+    """Websocket handler"""
     def open(self):
+        """Subscribes to the updates by adding itself to the clients list"""
         clients.append(self)
 
     def on_close(self):
+        """Removes itself from clients list"""
         clients.remove(self)
         print('connection closed')
 
-    # to allow cross-domain connections
     def check_origin(self, origin):
+        """Allows cross origin connection if you want to embed wlm.js library in some page on another domain"""
         return True
 
 class ApiHandler(tornado.web.RequestHandler):
+    """Creates simple HTTP API if you don't like websockets"""
     def get(self, channel=None):
         w = wlmeter.wavelengths
         sw = wlmeter.switcher_mode
@@ -46,6 +52,7 @@ class ApiHandler(tornado.web.RequestHandler):
                 self.write({"error":"Wrong channel"})
 
 class IndexHandler(tornado.web.RequestHandler):
+    """Renders index.html page"""
     def get(self):
         self.render("index.html",
             wavelengths=wlmeter.wavelengths,
@@ -56,6 +63,7 @@ class IndexHandler(tornado.web.RequestHandler):
 default_config_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "config.json"))
 
 def make_app(config):
+    """All the routes are defined here"""
     static_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "static"))
     return tornado.web.Application([
             (r"%s/" % config["root"], IndexHandler),
@@ -65,8 +73,8 @@ def make_app(config):
             (r"%s/static/(.*)" % config["root"], tornado.web.StaticFileHandler, {'path': static_path}),
     ], debug=True)
 
-# config file parser
 class config_action(argparse.Action):
+    """Parses config file argument"""
     def __call__(self, parser, namespace, values, option_string=None):
         config_file = values
         if not os.path.isfile(config_file):
@@ -76,8 +84,9 @@ class config_action(argparse.Action):
         else:
             raise argparse.ArgumentTypeError("config:{0} is not a readable file".format(config_file))
 
-# building configuration
 def get_config():
+    """Building configuration dictionary"""
+
     # command line arguments parsing
     parser = argparse.ArgumentParser(description='Starts a webserver with wavemeter interface.')
     parser.add_argument('--debug', dest='debug', action='store_const',
@@ -128,10 +137,14 @@ if __name__ == "__main__":
     wlmeter = WavelengthMeter(debug=config["debug"])
 
     app = make_app(config)
+
     if "ssl" in config:
+        # https and wss server
         server = tornado.httpserver.HTTPServer(app, xheaders=True, ssl_options=config["ssl"])
     else:
+        # http and ws server
         server = tornado.httpserver.HTTPServer(app)
+
     server.listen(config["port"])
     print("Server started at http://localhost:%d%s/" % (config["port"], config["root"]))
 
