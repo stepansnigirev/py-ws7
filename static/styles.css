@@ -57,7 +57,7 @@ nav a:hover{
 }
 .colored .data{
     font-size: 40px;
-    font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-family: "Roboto Mono", SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 .colored .data:after{
     content: ' nm';
